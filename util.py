@@ -20,7 +20,7 @@ def resize(im):
     this function is used to resize an image
 
     :param im: np.array with shape  (*,*,3)
-    :return:   np.array with shape  (IMG_W,IMG_H,3)
+    :return:   np.array with shape  (IMG_H,IMG_W,3)
     """
     im = Image.fromarray(im.astype(np.uint8))
     im = im.resize((IMG_W,IMG_H),Image.ANTIALIAS)

@@ -24,7 +24,7 @@ class ACModel(Model):
         self.a_index = 0
         self.c_index = 0
         self.save_index = 0
-        self.call(np.random.random((1, 84, 84, 4)).astype(np.float32))
+        self.call(np.random.random((1, IMG_H, IMG_W, k)).astype(np.float32))
         self.load_weights(dir)
 
     @tf.function
@@ -63,8 +63,8 @@ times = 100
 class Env():
     def __init__(self, agent):
         env = gym.make(env_name)
-        env = WarpFrame(env)
-        env = FrameStack(env, k=4)
+        env = WarpFrame(env, width=IMG_W, height=IMG_H, grayscale=True)
+        env = FrameStack(env, k=k)
         self.env = env
 
         self.agent = agent
@@ -105,6 +105,7 @@ class Env():
                 state = self.preprocess(state)
                 step = 0
         print(sum(l) / times)
+
 
 #
 # for i in range(4, 5):

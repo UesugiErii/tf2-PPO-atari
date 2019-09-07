@@ -11,8 +11,8 @@ class Env():
     def __init__(self, agent, env_id):
         env = gym.make(env_name)
         # env =  NoopResetEnv(env , noop_max=env_id)
-        env = WarpFrame(env)
-        env = FrameStack(env, k=k)
+        env = WarpFrame(env, width=IMG_W, height=IMG_H, grayscale=True)
+        env = FrameStack(env, k=k)  # return (height , width ,k)
         self.env = env
 
         self.agent = agent
