@@ -9,41 +9,13 @@ from atari_wrappers import *
 from config import *
 
 
-class ACModel(Model):
-    def __init__(self, name, dir):
-        self.n = name
-        super(ACModel, self).__init__()
-        self.c1 = Conv2D(32, kernel_size=(8, 8), strides=(4, 4),
-                         activation='relu')
-        self.c2 = Conv2D(64, kernel_size=(4, 4), strides=(2, 2), activation='relu')
-        self.c3 = Conv2D(64, kernel_size=(3, 3), strides=(1, 1), activation='relu')
-        self.flatten = Flatten()
-        self.d1 = Dense(512, activation="relu")
-        self.d2 = Dense(1)  # C
-        self.d3 = Dense(4, activation='softmax')  # A
-        self.a_index = 0
-        self.c_index = 0
-        self.save_index = 0
-        self.call(np.random.random((1, IMG_H, IMG_W, k)).astype(np.float32))
-        self.load_weights(dir)
-
-    @tf.function
-    def call(self, inputs):
-        x = inputs / 255.0
-        x = self.c1(x)
-        x = self.c2(x)
-        x = self.c3(x)
-        x = self.flatten(x)
-        x = self.d1(x)
-        a = self.d3(x)
-        c = self.d2(x)
-        return a, c
-
+from model import ACModel
 
 class ACAgent():
     def __init__(self, dir):
         super(ACAgent, self).__init__()
-        self.Model = ACModel("model", dir=dir)
+        self.Model = ACModel()
+        self.Model.load_weights(dir)
 
     def choice_action(self, state):
         data = self.Model(np.array(state)[np.newaxis, :].astype(np.float32))
@@ -112,8 +84,8 @@ class Env():
 print('---------------------------------------------')
 # print(i)
 # index = 16000 * i
-index = 0
-restore_weight_dir = "./logs/weight/{}".format(index)
+index = 64000
+restore_weight_dir = "./logs/pong/{}".format(index)
 Env(ACAgent(restore_weight_dir)).run()
 print('---------------------------------------------')
 

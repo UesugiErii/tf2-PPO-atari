@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="870c3d2c-5b7b-449a-be9c-3a6c7ef8606d" name="Default Changelist" comment="fix some error about">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="870c3d2c-5b7b-449a-be9c-3a6c7ef8606d" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/environment.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/test_and_show.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_and_show.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -31,11 +28,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/.gitignore">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="66">
-              <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+              <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/config.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="20" column="64" selection-start-line="20" selection-start-column="64" selection-end-line="20" selection-end-column="64" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/test_and_show.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="330">
+              <caret line="60" column="42" selection-start-line="60" selection-start-column="42" selection-end-line="60" selection-end-column="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/environment.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-71">
+              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+              <folding>
+                <element signature="e#0#10#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="368">
+              <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
+              <folding>
+                <element signature="e#0#11#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -78,22 +117,22 @@
         <option value="$PROJECT_DIR$/test/test.py" />
         <option value="$PROJECT_DIR$/communication.py" />
         <option value="$PROJECT_DIR$/run.py" />
-        <option value="$PROJECT_DIR$/model.py" />
         <option value="$PROJECT_DIR$/brain.py" />
         <option value="$PROJECT_DIR$/agent.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/atari_wrappers.py" />
         <option value="$PROJECT_DIR$/environment.py" />
         <option value="$PROJECT_DIR$/util.py" />
-        <option value="$PROJECT_DIR$/config.py" />
-        <option value="$PROJECT_DIR$/test_and_show.py" />
         <option value="$PROJECT_DIR$/.gitignore" />
+        <option value="$PROJECT_DIR$/model.py" />
+        <option value="$PROJECT_DIR$/test_and_show.py" />
+        <option value="$PROJECT_DIR$/config.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2098" />
-    <option name="y" value="268" />
+    <option name="x" value="2270" />
+    <option name="y" value="337" />
     <option name="width" value="1599" />
     <option name="height" value="1023" />
   </component>
@@ -103,6 +142,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -110,11 +150,79 @@
               <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
               <item name="tf2-PPO-atari" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tf2-PPO-atari" type="462c0819:PsiDirectoryNode" />
+              <item name="logs" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="tf2-PPO-atari" type="462c0819:PsiDirectoryNode" />
+              <item name="logs" type="462c0819:PsiDirectoryNode" />
+              <item name="pong" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="tensorflow" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="tensorflow" type="462c0819:PsiDirectoryNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="tensorflow" type="462c0819:PsiDirectoryNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="framework" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="tensorflow" type="462c0819:PsiDirectoryNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="keras" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="tf2-PPO-atari" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="&lt; Python 3.6 &gt;" type="70bed36:NamedLibraryElementNode" />
+              <item name="site-packages" type="462c0819:PsiDirectoryNode" />
+              <item name="tensorflow" type="462c0819:PsiDirectoryNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="keras" type="462c0819:PsiDirectoryNode" />
+              <item name="engine" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -154,7 +262,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.util">
+  <component name="RunManager" selected="Python.test_and_show">
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <module name="tf2" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -295,9 +403,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.test_and_show" />
         <item itemvalue="Python.util" />
         <item itemvalue="Python.run" />
-        <item itemvalue="Python.test_and_show" />
         <item itemvalue="Python.test" />
         <item itemvalue="Python.test (1)" />
       </list>
@@ -402,12 +510,21 @@
       <workItem from="1567740633984" duration="3529000" />
       <workItem from="1567763205966" duration="861000" />
       <workItem from="1567764102146" duration="184000" />
-      <workItem from="1567854806321" duration="778000" />
+      <workItem from="1567854806321" duration="885000" />
+      <workItem from="1567951792013" duration="2760000" />
     </task>
+    <task id="LOCAL-00001" summary="fix some error about height and weight">
+      <created>1567855614605</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1567855614605</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="157530000" />
+    <option name="totallyTimeSpent" value="160397000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -419,16 +536,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2098" y="268" width="1599" height="1023" extended-state="0" />
+    <frame x="2270" y="337" width="1599" height="1023" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.22858983" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.23180941" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32903227" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32426128" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4066874" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3232662" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.40604028" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3295964" />
@@ -475,6 +592,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fix some error about height and weight" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix some error about height and weight" />
+  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/tf2_ppo$run.coverage" NAME="run Coverage Results" MODIFIED="1563196887502" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tf2_a2c_new2$test.coverage" NAME="test Coverage Results" MODIFIED="1563165957711" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
@@ -490,6 +611,7 @@
     <SUITE FILE_PATH="coverage/tf2_a2c$run.coverage" NAME="run Coverage Results" MODIFIED="1562588552242" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tf2_a2c$test.coverage" NAME="test Coverage Results" MODIFIED="1561804547090" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/tf2_a2c_new2$test__1_.coverage" NAME="test (1) Coverage Results" MODIFIED="1562598523047" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/tf2_PPO_atari$test_and_show.coverage" NAME="test_and_show Coverage Results" MODIFIED="1567954869085" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tf2$AC_v2_CartPole_v1.coverage" NAME="AC-v2 CartPole-v1 Coverage Results" MODIFIED="1560695984778" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/test" />
     <SUITE FILE_PATH="coverage/tf2$dqn.coverage" NAME="dqn Coverage Results" MODIFIED="1559742935774" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/tf2$run.coverage" NAME="run Coverage Results" MODIFIED="1560954749038" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -579,7 +701,6 @@
     </expressions>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/.PyCharm2019.1/system/python_stubs/-1247971763/numpy/random/mtrand.py" />
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/typeshed/stdlib/3/multiprocessing/__init__.pyi">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="250">
@@ -712,13 +833,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/test/test.py" />
     <entry file="file://$PROJECT_DIR$/test.py" />
-    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/tensorflow/python/framework/errors_impl.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1043">
-          <caret line="552" selection-start-line="552" selection-end-line="552" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/tensorflow/python/ops/gen_math_ops.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-308">
@@ -792,16 +906,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/environment.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/wrappers.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="396">
@@ -836,13 +940,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="1" column="10" selection-start-line="1" selection-start-column="10" selection-end-line="1" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/run.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="44">
@@ -852,20 +949,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/structure.PNG">
       <provider selected="true" editor-type-id="images" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="11" lean-forward="true" selection-start-column="11" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/test_and_show.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-127">
-          <caret line="66" column="33" selection-start-line="66" selection-start-column="33" selection-end-line="66" selection-end-column="33" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/util.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -880,7 +963,55 @@
     <entry file="file://$PROJECT_DIR$/.gitignore">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="66">
-          <caret line="3" column="6" lean-forward="true" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+          <caret line="3" column="6" selection-start-line="3" selection-start-column="6" selection-end-line="3" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/tensorflow/python/framework/errors_impl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="691">
+          <caret line="552" selection-start-line="552" selection-end-line="552" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.local/lib/python3.6/site-packages/tensorflow/python/keras/engine/training.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="192">
+          <caret line="120" column="6" selection-start-line="120" selection-start-column="6" selection-end-line="120" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="368">
+          <caret line="32" column="32" selection-start-line="32" selection-start-column="32" selection-end-line="32" selection-end-column="32" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/config.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="20" column="64" selection-start-line="20" selection-start-column="64" selection-end-line="20" selection-end-column="64" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environment.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-71">
+          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+          <folding>
+            <element signature="e#0#10#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_and_show.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="330">
+          <caret line="60" column="42" selection-start-line="60" selection-start-column="42" selection-end-line="60" selection-end-column="42" />
         </state>
       </provider>
     </entry>
