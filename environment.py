@@ -12,13 +12,15 @@ class Env():
         env = gym.make(env_name)
         # env =  NoopResetEnv(env , noop_max=env_id)
         env = WarpFrame(env, width=IMG_W, height=IMG_H, grayscale=True)
-        env = FrameStack(env, k=k)  # return (height , width ,k)
+        env = FrameStack(env, k=k)  # return (IMG_H , IMG_W ,k)
         self.env = env
 
         self.agent = agent
         self.env_id = env_id
 
     def preprocess(self, state):
+        # you can do something at this function
+        # like clip screen to remove  useless information to speed up convergence
         return state
 
     def run(self):

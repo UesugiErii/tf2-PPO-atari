@@ -68,8 +68,8 @@ class ACModel(Model):
                 tf.multiply(
                     tf.clip_by_value(
                         r,
-                        1 - 0.1,
-                        1 + 0.1
+                        1 - clip_epsilon,
+                        1 + clip_epsilon
                     ),
                     adv
                 )
@@ -90,7 +90,7 @@ class ACModel(Model):
                 self.record('c loss', L)
 
             self.save_index += 1
-            if self.save_index % 16000 == 0:
+            if self.save_index % save_span == 0:
                 self.save_weights(weight_dir + str(self.save_index), save_format='tf')
         return tape.gradient(loss_value, self.trainable_weights), loss_value
 

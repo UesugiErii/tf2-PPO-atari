@@ -1,5 +1,4 @@
 import numpy as np
-import time
 from config import *
 import sys
 
@@ -8,7 +7,6 @@ class Agent():
     def __init__(self, talker, seed):
         super(Agent, self).__init__()
         self.talker = talker
-        self.states_list = self.talker.states_list
         self.reset()
 
         # In send span , may have more than one episode
