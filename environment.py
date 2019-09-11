@@ -49,6 +49,8 @@ class Env():
             # if step >= 60000:
             #    done = True
 
+            if done:
+                state_ = self.env.reset()
             self.agent.observe(state, a, r, state_, done)
 
             state = state_
@@ -57,7 +59,7 @@ class Env():
                 print(str(self.env_id) + ":" + str(count) + "      :       " + str(one_episode_reward))
                 count += 1
                 one_episode_reward = 0
-                state = self.env.reset()
+                state = state_
                 self.agent.reset()
                 state = self.preprocess(state)
                 step = 0
