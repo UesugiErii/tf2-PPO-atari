@@ -1,7 +1,8 @@
 import numpy as np
 import time
 from PIL import Image
-from config import IMG_H,IMG_W
+from config import IMG_H, IMG_W
+
 
 def gray_scale(im):
     """
@@ -23,9 +24,10 @@ def resize(im):
     :return:   np.array with shape  (IMG_H,IMG_W,3)
     """
     im = Image.fromarray(im.astype(np.uint8))
-    im = im.resize((IMG_W,IMG_H),Image.ANTIALIAS)
+    im = im.resize((IMG_W, IMG_H), Image.ANTIALIAS)
     im = np.array(im).astype("uint8")
     return im
+
 
 def resize_gray(im):
     # combine two functions above

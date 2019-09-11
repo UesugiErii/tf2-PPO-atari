@@ -46,7 +46,7 @@ class Agent():
 
     def observe(self, state, a, R, state_, done):
         """
-            two situations:
+            three situations:
 
             (1): done , but data dont have reach batch_size(horizon)
 
@@ -54,11 +54,13 @@ class Agent():
 
                 move self.ep_* to self.send_* (also need calc adv,realv)
 
-            (2): reach batch_size(horizon)
+            (2): reach batch_size(horizon) , and dont done thus len(self.send_as) != batch_size is True
 
-                calc realv and adv , then send data
+                need last extra state v to calc realv and adv , then send data
 
-            done and reach batch_size(horizon) , this no need to consider
+            (3): reach batch_size(horizon) , and done thus len(self.send_as) != batch_size is False
+
+                last extra state v is 0
         """
 
         self.ep_obs.append(state)
@@ -83,7 +85,7 @@ class Agent():
             self.ep_old_ap = []
 
         if self.index % batch_size == 0:
-            if len(self.send_as) != batch_size:
+            if len(self.send_as) != batch_size:  # reach rollout length and dont done
                 self.choice_action(state_)
                 self.ep_old_ap.pop()
 
@@ -128,7 +130,6 @@ class Agent():
             pass
         else:
             raise RuntimeError("DONT RECV ok")
-
 
     def calc_realv_adv(self, ep_rs, ep_vs):
         """

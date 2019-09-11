@@ -1,5 +1,6 @@
 import gym
 
+
 # copy from https://github.com/openai/baselines/blob/master/baselines/common/wrappers.py
 
 class TimeLimit(gym.Wrapper):
@@ -19,6 +20,7 @@ class TimeLimit(gym.Wrapper):
     def reset(self, **kwargs):
         self._elapsed_steps = 0
         return self.env.reset(**kwargs)
+
 
 class ClipActionsWrapper(gym.Wrapper):
     def step(self, action):

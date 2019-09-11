@@ -68,15 +68,15 @@ class ACBrain():
                         temp_id[count] = child_id
                         count += 1
                     else:
-                        self.talker.states_list[child_id] = 1   # means this agent wait for learning
+                        self.talker.states_list[child_id] = 1  # means this agent wait for learning
                         episode_reward = origin_data.pop()  # fetch one_episode_reward
 
-                        for one_episode_reward in episode_reward: # use tensorflow recode reward in one episode
+                        for one_episode_reward in episode_reward:  # use tensorflow recode reward in one episode
                             self.model.record(name='one_episode_reward', data=one_episode_reward,
                                               step=self.one_episode_reward_index)
                             self.one_episode_reward_index += 1
 
-                        self.memory.append(origin_data)     # store learning data
+                        self.memory.append(origin_data)  # store learning data
 
                         del temp_data[-1]
                         del temp_id[-1]

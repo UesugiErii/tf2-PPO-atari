@@ -8,8 +8,8 @@ from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
 from atari_wrappers import *
 from config import *
 
-
 from model import ACModel
+
 
 class ACAgent():
     def __init__(self, dir):
