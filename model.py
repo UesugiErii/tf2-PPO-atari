@@ -29,7 +29,6 @@ class ACModel(Model):
         self.d1 = Dense(512, activation="relu")
         self.d2 = Dense(1)  # C
         self.d3 = Dense(a_num, activation='softmax')  # A
-        self.save_index = index
         self.total_index = index
         self.call(np.random.random((batch_size, IMG_H, IMG_W, k)).astype(np.float32))
         if restore:
@@ -89,9 +88,8 @@ class ACModel(Model):
                 self.record('H', H)
                 self.record('c loss', L)
 
-            self.save_index += 1
-            if self.save_index % save_span == 0:
-                self.save_weights(weight_dir + str(self.save_index), save_format='tf')
+            if self.total_index % save_span == 0:
+                self.save_weights(weight_dir + str(self.total_index), save_format='tf')
         return tape.gradient(loss_value, self.trainable_weights), loss_value
 
     def record(self, name, data, step=None):
