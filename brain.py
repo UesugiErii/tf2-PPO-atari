@@ -76,7 +76,7 @@ class ACBrain():
                                               step=self.one_episode_reward_index)
                             self.one_episode_reward_index += 1
 
-                        self.memory.append(origin_data)  # store learning data
+                        self.memory.append([child_id, origin_data])  # store learning data
 
                         del temp_data[-1]
                         del temp_id[-1]
@@ -96,26 +96,27 @@ class ACBrain():
                 self.talker.send("ok", child_id)
 
     def learn(self):
-        total_obs = []
-        total_as = []
-        total_old_ap = []
-        total_adv = np.array([], dtype=np.float32)
-        total_real_v = np.array([], dtype=np.float32)
 
         # Data preprocessing before learning
         # realv means a state's target v
 
-        for data in self.memory:
-            ep_obs, ep_as, realv, adv, ep_old_ap = data
-            total_as.extend(ep_as)
-            total_old_ap.extend(ep_old_ap)
-            total_real_v = np.concatenate([total_real_v, realv])
-            total_adv = np.concatenate([total_adv, adv])
-            total_obs.extend(ep_obs)
+        total_obs = np.zeros((process_num * batch_size, IMG_H, IMG_W, k), dtype=np.float32)
+        total_as = np.zeros((process_num * batch_size, a_num), dtype=np.float32)
+        total_old_ap = np.zeros((process_num * batch_size, a_num), dtype=np.float32)
+        total_adv = np.zeros((process_num * batch_size), dtype=np.float32)
+        total_real_v = np.zeros((process_num * batch_size), dtype=np.float32)
 
-        total_obs = np.stack(total_obs, axis=0).astype(np.float32)
-        total_old_ap = np.stack(total_old_ap, axis=0)
-        total_as = tf.one_hot(total_as, depth=a_num).numpy()
+        for data in self.memory:
+            child_id, origin_data = data
+            child_id -= 1
+            ep_obs, ep_as, realv, adv, ep_old_ap = origin_data
+            s = child_id * batch_size
+            e = s + batch_size
+            total_as[s:e] = tf.one_hot(np.array(ep_as), depth=a_num)
+            total_old_ap[s:e] = ep_old_ap
+            total_real_v[s:e] = realv
+            total_adv[s:e] = adv
+            total_obs[s:e] = np.array(ep_obs,dtype=np.float32)
 
         for _ in range(epochs):
             sample_index = np.random.choice(total_as.shape[0], size=learning_batch)
