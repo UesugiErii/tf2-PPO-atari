@@ -10,7 +10,7 @@ class Master():
         self.states_list = states_list
 
     def send(self, data, child_id: int):
-        self.send_queues[child_id - 1].send(data)
+        self.send_queues[child_id].send(data)
         return 1
 
     def recv(self):
@@ -48,7 +48,7 @@ class Child():
             data = self.recv_queue.recv()
         except:
             print("master is end")
-            data = -1
+            raise Exception
         return data
 
     def set_state(self, state: int):
@@ -78,102 +78,25 @@ class Communication():
             recv_res_pipes.append(r)
 
         # states
-        # for master
-        #  0          1
-        # work      train
         # for child
         #  0          1
         # work     finished
         # if all children is finished, then master can start learning
-        # when master state from 1 to 0 , the children can restart play
 
-        # 0 is master , 1~child_num is children
-        states_list = []
-        for i in range(1 + child_num):
-            states_list.append(Value('d', 0))
-
-        states_list = Array('i', [0 for _ in range(1 + child_num)])
+        # children states list
+        states_list = Array('i', [0 for _ in range(child_num)])
 
         self.master = Master(send_queues=send_res_pipes,
                              recv_queue=recv_s_pipe,
                              states_list=states_list
                              )
 
-        self.children = [0 for _ in range(child_num)]
+        self.children = [0]*child_num
         for i in range(child_num):
             self.children[i] = Child(
                 lock=lock,
                 send_queue=send_s_pipe,
                 recv_queue=recv_res_pipes[i],
                 states_list=states_list,  #
-                child_id=i + 1  # child_id  from 1 to child_num
+                child_id=i  # child_id  from 0 to child_num-1
             )
-
-
-#   WARNING  :  This test is out-of-date , DONT USE
-# ------------------------------------------------------
-#                        test
-# -------------------------------------------------------
-
-
-def master_f(master: Master):
-    brain_memory = []
-    while True:
-        try:
-            child_id, data = master.recv()
-            flag, origin_data = data
-        except:
-            child_id = -1
-            data = None
-        if child_id == -1:
-            if all(master.states_list[1:]):
-                break
-        else:
-            if flag:
-                master.send(origin_data + 100, child_id)
-            else:
-                brain_memory.append(origin_data)
-
-                # tell child can change his state
-                master.send("ok", child_id)
-
-    if len(brain_memory) == process_num:
-        print("master           :   OK")
-
-
-# data structure
-# [flag , origin data]
-# when flag = 1 , mean agent is playing   , this time data is frame
-# when flag = 0 , mean agent had finished , this time data is all memory
-
-def child_f(child: Child):
-    for i in range(child.child_id):
-        child.send([1, i])
-        res = child.recv()
-        if res != i + 100:
-            print("error in child_f")
-
-    child.send([0, "big memory"])
-    if child.recv() == "ok":
-        child.set_state(1)
-    else:
-        print("child_f_" + str(child.child_id) + "        :   ERROR")
-    print("child_f_" + str(child.child_id) + "        :   OK")
-
-
-def main():
-    communication = Communication(child_num=process_num)
-    master_p = Process(target=master_f, args=(communication.master,))
-    child_p = []
-    for i in range(process_num):
-        child_p.append(Process(target=child_f, args=(communication.children[i],)))
-    master_p.start()
-    for p in child_p:
-        p.start()
-    master_p.join()
-    for p in child_p:
-        p.join()
-
-
-if __name__ == '__main__':
-    main()

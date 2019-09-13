@@ -17,7 +17,7 @@ def main():
     for i in range(process_num):
         agent = Agent(talker=communication.children[i],
                       seed=i)
-        env_temp = Env(agent, i + 1)
+        env_temp = Env(agent, i)
         envs_p.append(Process(target=env_temp.run, args=()))
 
     for i in envs_p:

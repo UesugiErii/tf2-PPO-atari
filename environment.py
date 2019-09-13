@@ -30,7 +30,6 @@ class Env():
         # use to count episode
         count = 1
         state = self.env.reset()
-        self.agent.reset()
         state = self.preprocess(state)
         one_episode_reward = 0
         # use to count step in one epoch
@@ -60,6 +59,5 @@ class Env():
                 count += 1
                 one_episode_reward = 0
                 state = state_
-                self.agent.reset()
                 state = self.preprocess(state)
                 step = 0

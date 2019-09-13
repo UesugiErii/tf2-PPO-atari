@@ -39,7 +39,7 @@ class ACBrain():
     def forward_calc(self, state):
         state = state.astype(np.float32)
         a_prob, v = self.model.predict(state)
-        return [a_prob, v]  # [(*,a_num) , (*,1)]  np.array
+        return a_prob, v  # [(*,a_num) , (*,1)]  np.array
 
     # states
     # for master            # Now dont use it
@@ -50,73 +50,88 @@ class ACBrain():
     # work     finished
     def run(self):
         print("brain" + "      ", os.getpid())
+
+        total_obs = np.zeros((batch_size, process_num, IMG_H, IMG_W, k), dtype=np.float32)
+        total_v = np.zeros((batch_size+ 1, process_num ), dtype=np.float32)
+        total_as = np.zeros((batch_size, process_num), dtype=np.int32)
+        total_rs = np.zeros((batch_size, process_num), dtype=np.float32)
+        total_is_done = np.zeros((batch_size, process_num), dtype=np.float32)
+        total_old_ap = np.zeros((batch_size, process_num, a_num), dtype=np.float32)
+
+        temp_obs = np.zeros((process_num, IMG_H, IMG_W, k), dtype=np.float32)
         while 1:
-            while 1:
 
-                # why use [0] * n
-                # This can pre-allocate memory , save time at copy data from a old small list to a new big list
-
-                n = process_num - sum(self.states_list[1:])  # how much data will I receive next
-                temp_data = [0] * n  # use to recode data that send by child
-                temp_id = [0] * n  # use to recode which child send data to brain
-                count = 0  # if one is prepare to learn , then need pop temp_*
-                for i in range(n):
+            for i in range(batch_size):
+                for j in range(process_num):
                     child_id, data = self.talker.recv()
-                    flag, origin_data = data  # flag  0 means learning data 1 means predict data
-                    if flag:
-                        temp_data[count] = origin_data
-                        temp_id[count] = child_id
-                        count += 1
-                    else:
-                        self.talker.states_list[child_id] = 1  # means this agent wait for learning
-                        episode_reward = origin_data.pop()  # fetch one_episode_reward
+                    temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
+                total_obs[i, :, :, :, :] = temp_obs
+                a_prob, v = self.forward_calc(temp_obs)
+                v.resize((process_num,))
+                total_v[i, :] = v
+                total_old_ap[i, :, :] = a_prob
 
-                        for one_episode_reward in episode_reward:  # use tensorflow recode reward in one episode
-                            self.model.record(name='one_episode_reward', data=one_episode_reward,
-                                              step=self.one_episode_reward_index)
-                            self.one_episode_reward_index += 1
-
-                        self.memory.append([child_id, origin_data])  # store learning data
-
-                        del temp_data[-1]
-                        del temp_id[-1]
-                if all(self.states_list[1:]):  # all agents wait for learning
-                    break
-                data = np.stack(temp_data, axis=0)
-                res = self.forward_calc(data)
-                for i, child_id in enumerate(temp_id):
+                for child_id in range(process_num):
                     self.talker.send(
-                        [res[0][i], res[1][i]],
+                        a_prob[child_id],
                         child_id
                     )
 
-            self.learn()
-            for child_id in range(1, process_num + 1):  # tell agents that can start act with env
+            for j in range(process_num):
+                child_id, data = self.talker.recv()
+                temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
+            a_prob, v = self.forward_calc(temp_obs)
+            v.resize((process_num,))
+            total_v[-1, :] = v
+            for child_id in range(process_num):
+                self.talker.send(
+                    a_prob[child_id],
+                    child_id
+                )
+
+            for j in range(process_num):
+                child_id, data = self.talker.recv()
+                # data
+                # [
+                # self.send_as,
+                # self.send_rs,
+                # self.send_is_done,
+                # self.episode_reward
+                # ]
+                total_as[:,child_id] = data[0]
+                total_rs[:,child_id] = data[1]
+                total_is_done[:,child_id] = data[2]
+                for one_episode_reward in data[3]:  # use tensorflow recode reward in one episode
+                    self.model.record(name='one_episode_reward', data=one_episode_reward,
+                                      step=self.one_episode_reward_index)
+                    self.one_episode_reward_index += 1
+
+            total_realv, total_adv = self.calc_realv_and_adv(total_v, total_rs, total_is_done)
+
+            total_obs.resize((process_num * batch_size, IMG_H, IMG_W, k))
+            total_as.resize((process_num * batch_size,))
+            total_old_ap.resize((process_num * batch_size, a_num))
+            total_adv.resize((process_num * batch_size,))
+            total_realv = total_realv.reshape((process_num * batch_size,))
+
+            self.learn(
+                total_obs,
+                tf.one_hot(total_as, depth=a_num).numpy(),
+                total_old_ap,
+                total_adv,
+                total_realv
+            )
+
+            for child_id in range(process_num):  # tell agents that can start act with env
                 self.states_list[child_id] = 0
                 self.talker.send("ok", child_id)
 
-    def learn(self):
+            total_obs.resize((batch_size , process_num, IMG_H, IMG_W, k))
+            total_as.resize((batch_size ,process_num,))
+            total_old_ap.resize((batch_size , process_num, a_num))
+            total_adv.resize((batch_size , process_num,))
 
-        # Data preprocessing before learning
-        # realv means a state's target v
-
-        total_obs = np.zeros((process_num * batch_size, IMG_H, IMG_W, k), dtype=np.float32)
-        total_as = np.zeros((process_num * batch_size, a_num), dtype=np.float32)
-        total_old_ap = np.zeros((process_num * batch_size, a_num), dtype=np.float32)
-        total_adv = np.zeros((process_num * batch_size), dtype=np.float32)
-        total_real_v = np.zeros((process_num * batch_size), dtype=np.float32)
-
-        for data in self.memory:
-            child_id, origin_data = data
-            child_id -= 1
-            ep_obs, ep_as, realv, adv, ep_old_ap = origin_data
-            s = child_id * batch_size
-            e = s + batch_size
-            total_as[s:e] = tf.one_hot(np.array(ep_as), depth=a_num)
-            total_old_ap[s:e] = ep_old_ap
-            total_real_v[s:e] = realv
-            total_adv[s:e] = adv
-            total_obs[s:e] = np.array(ep_obs,dtype=np.float32)
+    def learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v):
 
         for _ in range(epochs):
             sample_index = np.random.choice(total_as.shape[0], size=learning_batch)
@@ -137,3 +152,46 @@ class ACBrain():
         #     sys.exit(0)
 
         self.memory = []
+
+    def calc_realv_and_adv(self, v, r, done):
+        length = r.shape[0]
+        num = r.shape[1]
+
+        realv = np.zeros((length + 1 , num), dtype=np.float32)
+        adv = np.zeros((length, num), dtype=np.float32)
+
+        realv[-1, :] = v[-1, :] * (1 - done[-1, :])
+
+        for t in range(length - 1, -1, -1):
+            realv[t, :] = realv[t+1, :] * gamma * (1 - done[t, :]) + r[t, :]
+            adv[t, :] = realv[t, :] - v[t, :]
+
+        return realv[:-1, :], adv  # end_v dont need
+
+
+def test1():
+    class temp:
+        def __init__(self):
+            self.states_list = 0
+
+    a = ACBrain(temp())
+    v = np.array([[1, 2, 3, 4, 5], [-1, -2, -5, -6, -4.0]], dtype=np.float32)
+    r = np.array([[1, 1, 1, 1], [2, 2, 2, 2]], dtype=np.float32)
+    done = np.array([[0, 0, 0, 1], [0, 1, 0, 0.0]], dtype=np.float32)
+    print(a.calc_realv_and_adv(v, r, done))
+
+    # v   1 2 3 4 5
+    # r   1 1 1 1
+    # done 0 0 0 1
+    # realv [ 3.940399,  2.9701  ,  1.99    ,  1.      ]
+    # adv  [ 2.940399 ,  0.9700999, -1.01     , -3.       ]
+
+    # v   -1 -2 -5 -6 -4
+    # r    2  2  2  2
+    # done 0  1  0  0
+    # realv [ 3.98    ,  2.      ,  0.0596  , -1.96    ]
+    # adv   [ 4.98     ,  4.       ,  5.0596   ,  4.04     ]
+
+
+if __name__ == '__main__':
+    test1()

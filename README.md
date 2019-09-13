@@ -27,10 +27,10 @@ gym (0.13.1)
 1070ti and ryzen1700(OC 3.7)
 
 Breakout  
-1.58 learning per second
+2.04 learning per second (estimated value by pong)
 
 Pong  
-1.66 learning per second
+2.15 learning per second
 
 ## Program structure
 
@@ -38,9 +38,9 @@ Pong
 
 environment.py used to create a environment that let agent do something , you can also customize the environment , like process state to speed up convergence
 
-agent.py contain a agent , as an intermediary to communicate with brain , store history data and calculate advantage(adv) and v_target(realv)
+agent.py contain a agent , as an intermediary to communicate with brain
 
-brain.py collect data from agent , give data to model after processing like one-hot
+brain.py collect data from agent , give data to model after processing like one-hot and calc adv,realv.....
 
 model.py calculate gradient , also record experimental data at the same time
 
