@@ -58,6 +58,8 @@ origin paper : https://arxiv.org/abs/1707.06347
 
 There are some different between my code and paper
 
+GAE paper : https://arxiv.org/abs/1506.02438
+
 
 ## Why do this ?
 
@@ -69,3 +71,11 @@ There are some different between my code and paper
 
 So I wrote this project that is easy to understand
 
+## logs dir explanation
+
+|dir|env|optimizers|GAE|
+| :----------: | :-----------:  | :-----------: | :-----------: |
+| 20190904-021336     | breakout     | RMSprop     | False     |
+| 20190905-000303     | breakout     | Adam     | False     |
+| 20190913-154820     | pong     | Adam     | False     |
+| 20190914-175108     | pong     | Adam     | True     |

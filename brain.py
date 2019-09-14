@@ -106,7 +106,7 @@ class ACBrain():
                                       step=self.one_episode_reward_index)
                     self.one_episode_reward_index += 1
 
-            total_realv, total_adv = self.calc_realv_and_adv(total_v, total_rs, total_is_done)
+            total_realv, total_adv = self.calc_realv_and_adv_GAE(total_v, total_rs, total_is_done)
 
             total_obs.resize((process_num * batch_size, IMG_H, IMG_W, k))
             total_as.resize((process_num * batch_size,))
@@ -168,6 +168,21 @@ class ACBrain():
 
         return realv[:-1, :], adv  # end_v dont need
 
+    def calc_realv_and_adv_GAE(self,v,r,done):
+        length = r.shape[0]
+        num = r.shape[1]
+
+        adv = np.zeros((length+1, num), dtype=np.float32)
+
+        for t in range(length - 1, -1, -1):
+            delta = r[t,:] + v[t+1,:] * gamma * (1-done[t,:]) - v[t,:]
+            adv[t,:] = delta + gamma * 0.95 * adv[t+1,:] * (1-done[t,:])
+
+        adv = adv[:-1,:]
+
+        realv = adv + v[:-1,:]
+
+        return realv,adv
 
 def test1():
     class temp:
