@@ -18,11 +18,6 @@ class Env():
         self.agent = agent
         self.env_id = env_id
 
-    def preprocess(self, state):
-        # you can do something at this function
-        # like clip screen to remove  useless information to speed up convergence
-        return state
-
     def run(self):
         np.random.seed(self.env_id)
         self.env.seed(self.env_id)
@@ -30,10 +25,10 @@ class Env():
         # use to count episode
         count = 1
         state = self.env.reset()
-        state = self.preprocess(state)
         one_episode_reward = 0
         # use to count step in one epoch
         step = 0
+        done = True
         while True:
             step += 1
             a = self.agent.choice_action(state)
@@ -42,14 +37,13 @@ class Env():
 
             one_episode_reward += r
 
-            state_ = self.preprocess(state_)
+            if done:
+                state = self.env.reset()
 
             # This can limit max step
             # if step >= 60000:
             #    done = True
 
-            if done:
-                state_ = self.env.reset()
             self.agent.observe(state, a, r, state_, done)
 
             state = state_
@@ -59,5 +53,4 @@ class Env():
                 count += 1
                 one_episode_reward = 0
                 state = state_
-                state = self.preprocess(state)
                 step = 0

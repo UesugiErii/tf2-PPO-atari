@@ -38,21 +38,14 @@ class ACBrain():
 
     def forward_calc(self, state):
         state = state.astype(np.float32)
-        a_prob, v = self.model.predict(state)
-        return a_prob, v  # [(*,a_num) , (*,1)]  np.array
+        a_prob, v = self.model.call(state)
+        return a_prob.numpy(), v.numpy()  # [(*,a_num) , (*,1)]  np.array
 
-    # states
-    # for master            # Now dont use it
-    #  0          1
-    # work      train
-    # for child
-    #  0          1
-    # work     finished
     def run(self):
         print("brain" + "      ", os.getpid())
 
         total_obs = np.zeros((batch_size, process_num, IMG_H, IMG_W, k), dtype=np.float32)
-        total_v = np.zeros((batch_size+ 1, process_num ), dtype=np.float32)
+        total_v = np.zeros((batch_size + 1, process_num), dtype=np.float32)
         total_as = np.zeros((batch_size, process_num), dtype=np.int32)
         total_rs = np.zeros((batch_size, process_num), dtype=np.float32)
         total_is_done = np.zeros((batch_size, process_num), dtype=np.float32)
@@ -67,27 +60,26 @@ class ACBrain():
                     temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
                 total_obs[i, :, :, :, :] = temp_obs
                 a_prob, v = self.forward_calc(temp_obs)
-                v.resize((process_num,))
-                total_v[i, :] = v
-                total_old_ap[i, :, :] = a_prob
-
                 for child_id in range(process_num):
                     self.talker.send(
                         a_prob[child_id],
                         child_id
                     )
+                v.resize((process_num,))
+                total_v[i, :] = v
+                total_old_ap[i, :, :] = a_prob
 
             for j in range(process_num):
                 child_id, data = self.talker.recv()
                 temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
             a_prob, v = self.forward_calc(temp_obs)
-            v.resize((process_num,))
-            total_v[-1, :] = v
             for child_id in range(process_num):
                 self.talker.send(
                     a_prob[child_id],
                     child_id
                 )
+            v.resize((process_num,))
+            total_v[-1, :] = v
 
             for j in range(process_num):
                 child_id, data = self.talker.recv()
@@ -98,9 +90,9 @@ class ACBrain():
                 # self.send_is_done,
                 # self.episode_reward
                 # ]
-                total_as[:,child_id] = data[0]
-                total_rs[:,child_id] = data[1]
-                total_is_done[:,child_id] = data[2]
+                total_as[:, child_id] = data[0]
+                total_rs[:, child_id] = data[1]
+                total_is_done[:, child_id] = data[2]
                 for one_episode_reward in data[3]:  # use tensorflow recode reward in one episode
                     self.model.record(name='one_episode_reward', data=one_episode_reward,
                                       step=self.one_episode_reward_index)
@@ -126,10 +118,10 @@ class ACBrain():
                 self.states_list[child_id] = 0
                 self.talker.send("ok", child_id)
 
-            total_obs.resize((batch_size , process_num, IMG_H, IMG_W, k))
-            total_as.resize((batch_size ,process_num,))
-            total_old_ap.resize((batch_size , process_num, a_num))
-            total_adv.resize((batch_size , process_num,))
+            total_obs.resize((batch_size, process_num, IMG_H, IMG_W, k))
+            total_as.resize((batch_size, process_num,))
+            total_old_ap.resize((batch_size, process_num, a_num))
+            total_adv.resize((batch_size, process_num,))
 
     def learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v):
 
@@ -157,32 +149,33 @@ class ACBrain():
         length = r.shape[0]
         num = r.shape[1]
 
-        realv = np.zeros((length + 1 , num), dtype=np.float32)
+        realv = np.zeros((length + 1, num), dtype=np.float32)
         adv = np.zeros((length, num), dtype=np.float32)
 
         realv[-1, :] = v[-1, :] * (1 - done[-1, :])
 
         for t in range(length - 1, -1, -1):
-            realv[t, :] = realv[t+1, :] * gamma * (1 - done[t, :]) + r[t, :]
+            realv[t, :] = realv[t + 1, :] * gamma * (1 - done[t, :]) + r[t, :]
             adv[t, :] = realv[t, :] - v[t, :]
 
         return realv[:-1, :], adv  # end_v dont need
 
-    def calc_realv_and_adv_GAE(self,v,r,done):
+    def calc_realv_and_adv_GAE(self, v, r, done):
         length = r.shape[0]
         num = r.shape[1]
 
-        adv = np.zeros((length+1, num), dtype=np.float32)
+        adv = np.zeros((length + 1, num), dtype=np.float32)
 
         for t in range(length - 1, -1, -1):
-            delta = r[t,:] + v[t+1,:] * gamma * (1-done[t,:]) - v[t,:]
-            adv[t,:] = delta + gamma * 0.95 * adv[t+1,:] * (1-done[t,:])
+            delta = r[t, :] + v[t + 1, :] * gamma * (1 - done[t, :]) - v[t, :]
+            adv[t, :] = delta + gamma * 0.95 * adv[t + 1, :] * (1 - done[t, :])
 
-        adv = adv[:-1,:]
+        adv = adv[:-1, :]
 
-        realv = adv + v[:-1,:]
+        realv = adv + v[:-1, :]
 
-        return realv,adv
+        return realv, adv
+
 
 def test1():
     class temp:
@@ -190,22 +183,94 @@ def test1():
             self.states_list = 0
 
     a = ACBrain(temp())
-    v = np.array([[1, 2, 3, 4, 5], [-1, -2, -5, -6, -4.0]], dtype=np.float32)
-    r = np.array([[1, 1, 1, 1], [2, 2, 2, 2]], dtype=np.float32)
-    done = np.array([[0, 0, 0, 1], [0, 1, 0, 0.0]], dtype=np.float32)
-    print(a.calc_realv_and_adv(v, r, done))
+    v = np.array([
+        [1, -1],
+        [2, -2],
+        [3, -5],
+        [4, -6],
+        [5, -4],
+    ])
+    r = np.array([
+        [1, 2],
+        [1, 2],
+        [1, 2],
+        [1, 2],
+    ])
+    done = np.array([
+        [0, 0],
+        [0, 1],
+        [0, 0],
+        [1, 0],
+    ])
+    # print(a.calc_realv_and_adv(v, r, done))
+    realv, adv = a.calc_realv_and_adv_GAE(v, r, done)
+    print('-------realv---------')
+    print(realv)
+    print('-------adv-----------')
+    print(adv)
+
+    # ---------------------
+    #       TEST
+    # ---------------------
 
     # v   1 2 3 4 5
     # r   1 1 1 1
     # done 0 0 0 1
-    # realv [ 3.940399,  2.9701  ,  1.99    ,  1.      ]
-    # adv  [ 2.940399 ,  0.9700999, -1.01     , -3.       ]
+    # realv [ 3.940399,
+    #           2.9701,
+    #             1.99,
+    #                1.
+    #                ]
+    # adv  [  2.940399,
+    #        0.9700999,
+    #            -1.01,
+    #               -3.
+    #               ]
 
     # v   -1 -2 -5 -6 -4
     # r    2  2  2  2
     # done 0  1  0  0
-    # realv [ 3.98    ,  2.      ,  0.0596  , -1.96    ]
-    # adv   [ 4.98     ,  4.       ,  5.0596   ,  4.04     ]
+    # realv [ 3.98,
+    #           2.,
+    #       0.0596,
+    #        -1.96
+    #        ]
+    # adv   [ 4.98,
+    #           4.,
+    #       5.0596,
+    #         4.04
+    #         ]
+
+    # ------------------------
+    #         GAE
+    # ------------------------
+    # v   1 2 3 4 5
+    # r   1 1 1 1
+    # done 0 0 0 1
+    # realv[4.07074487,
+    #          3.15975,
+    #           2.1385,
+    #                1.
+    #                ]
+    # adv  [3.07074487,
+    #          1.15975,
+    #          -0.8615,
+    #               -3.
+    #               ]
+
+    # v   -1 -2 -5 -6 -4
+    # r    2  2  2  2
+    # done 0  1  0  0
+    # realv [ 3.782,
+    #           2.,
+    #       -0.14038,
+    #        -1.96
+    #        ]
+    # adv   [ 4.782,
+    #           4.,
+    #       4.85962,
+    #         4.04
+    #         ]
 
 
 if __name__ == '__main__':
