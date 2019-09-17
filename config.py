@@ -9,15 +9,19 @@ clip_epsilon = 0.1                           # clip ε , I dont use annealed
 lr = 0.00025                                 # learning rate
 max_learning_times = 200000*3                # max learning time
 gamma = 0.99                                 # discount reward
-k = 4                                        # frame stack number
 learning_batch = process_num*batch_size//4   # learn batch
 epochs = 3                                   # learning epochs time
 VFcoeff = 1                                  # same as PPO paper
+
 env_name = 'PongDeterministic-v4'            # env name
+import gym
+env = gym.make(env_name)
+a_num = env.action_space.n                   # env.action_space
+del env
 
-# import gym
-# env = gym.make(env_name)
-# a_num = env.action_space.n                 # env.action_space
-# del env
-
-a_num = 4                                    # sometime need set
+use_RNN = False
+hidden_unit_num = 128
+if use_RNN:
+    k = 1                                    # can be other number
+else:
+    k = 4                                    # frame stack number

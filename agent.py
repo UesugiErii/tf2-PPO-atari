@@ -16,8 +16,8 @@ class Agent():
         self.one_episode_reward = 0
         np.random.seed(seed)
 
-    def choice_action(self, state):
-        self.talker.send(state)
+    def choice_action(self, state, done):
+        self.talker.send((state, done))
         prob_weights = self.talker.recv()  # a_prob
 
         action = np.random.choice(range(a_num), p=prob_weights)
@@ -42,7 +42,7 @@ class Agent():
 
         if self.index % batch_size == 0:
             # print('reach horizon')
-            self.choice_action(state_)
+            self.choice_action(state_, 0)
             # print('send all data')
             self.send_all_data()
             self.index = 0
@@ -62,4 +62,3 @@ class Agent():
             pass
         else:
             raise RuntimeError("DONT RECV ok")
-

@@ -31,14 +31,14 @@ class Env():
         done = True
         while True:
             step += 1
-            a = self.agent.choice_action(state)
+            a = self.agent.choice_action(state, done)
 
             state_, r, done, info = self.env.step(a)
 
             one_episode_reward += r
 
             if done:
-                state = self.env.reset()
+                state_ = self.env.reset()
 
             # This can limit max step
             # if step >= 60000:

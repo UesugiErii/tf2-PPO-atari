@@ -8,13 +8,13 @@ from tensorflow.python.keras.layers import Dense, Conv2D, Flatten
 from atari_wrappers import *
 from config import *
 
-from model import ACModel
+from model import CNNModel
 
 
 class ACAgent():
     def __init__(self, dir):
         super(ACAgent, self).__init__()
-        self.Model = ACModel()
+        self.Model = CNNModel()
         self.Model.load_weights(dir)
 
     def choice_action(self, state):

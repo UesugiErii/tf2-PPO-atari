@@ -5,7 +5,7 @@ os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
 import tensorflow as tf
 import tensorflow.keras.optimizers as optim
 from config import *
-from model import ACModel
+from model import CNNModel, RNNModel
 
 
 class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
@@ -27,19 +27,29 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 class ACBrain():
     def __init__(self, talker):
         super(ACBrain, self).__init__()
-        self.model = ACModel()
-        self.model.build((None, IMG_H, IMG_W, k))
+        if use_RNN:
+            self.model = RNNModel()
+            self.model.call(
+                np.random.random((batch_size, IMG_H, IMG_W, k)).astype(np.float32),
+                np.zeros((batch_size, hidden_unit_num), dtype=np.float32),
+                np.zeros((batch_size, hidden_unit_num), dtype=np.float32)
+            )
+        else:
+            self.model = CNNModel()
+            self.model.build((None, IMG_H, IMG_W, k))
         self.talker = talker
         self.i = 1
         self.optimizer = optim.Adam(learning_rate=CustomSchedule(lr))
         self.states_list = self.talker.states_list
-        self.memory = []
         self.one_episode_reward_index = 0
 
-    def forward_calc(self, state):
-        state = state.astype(np.float32)
+    def cnn_forward_calc(self, state):
         a_prob, v = self.model.call(state)
         return a_prob.numpy(), v.numpy()  # [(*,a_num) , (*,1)]  np.array
+
+    def rnn_forward_calc(self, state, h, c):
+        a_prob, v, hc = self.model.call(state, h, c)
+        return a_prob.numpy(), v.numpy(), hc[0].numpy(), hc[1].numpy()
 
     def run(self):
         print("brain" + "      ", os.getpid())
@@ -50,29 +60,47 @@ class ACBrain():
         total_rs = np.zeros((batch_size, process_num), dtype=np.float32)
         total_is_done = np.zeros((batch_size, process_num), dtype=np.float32)
         total_old_ap = np.zeros((batch_size, process_num, a_num), dtype=np.float32)
+        if use_RNN:
+            total_h = np.zeros((batch_size, process_num, hidden_unit_num), dtype=np.float32)
+            total_c = np.zeros((batch_size, process_num, hidden_unit_num), dtype=np.float32)
 
         temp_obs = np.zeros((process_num, IMG_H, IMG_W, k), dtype=np.float32)
         while 1:
+            if use_RNN:
+                temp_h = total_h[-1, :, :]
+                temp_c = total_c[-1, :, :]
 
             for i in range(batch_size):
                 for j in range(process_num):
                     child_id, data = self.talker.recv()
-                    temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
+                    temp_obs[child_id, :, :, :] = np.array(data[0], dtype=np.float32)
+                    if use_RNN and data[1]:
+                        temp_h[child_id, :] = 0
+                        temp_c[child_id, :] = 0
                 total_obs[i, :, :, :, :] = temp_obs
-                a_prob, v = self.forward_calc(temp_obs)
+                if use_RNN:
+                    total_h[i, :, :] = temp_h
+                    total_c[i, :, :] = temp_c
+                    a_prob, v, temp_h, temp_c = self.rnn_forward_calc(temp_obs, temp_h, temp_c)
+                else:
+                    a_prob, v = self.cnn_forward_calc(temp_obs)
                 for child_id in range(process_num):
                     self.talker.send(
                         a_prob[child_id],
                         child_id
                     )
+
                 v.resize((process_num,))
                 total_v[i, :] = v
                 total_old_ap[i, :, :] = a_prob
 
             for j in range(process_num):
                 child_id, data = self.talker.recv()
-                temp_obs[child_id, :, :, :] = np.array(data, dtype=np.float32)
-            a_prob, v = self.forward_calc(temp_obs)
+                temp_obs[child_id, :, :, :] = np.array(data[0], dtype=np.float32)
+            if use_RNN:
+                a_prob, v, _, _ = self.rnn_forward_calc(temp_obs, temp_h, temp_c)
+            else:
+                a_prob, v = self.cnn_forward_calc(temp_obs)
             for child_id in range(process_num):
                 self.talker.send(
                     a_prob[child_id],
@@ -105,14 +133,27 @@ class ACBrain():
             total_old_ap.resize((process_num * batch_size, a_num))
             total_adv.resize((process_num * batch_size,))
             total_realv = total_realv.reshape((process_num * batch_size,))
+            if use_RNN:
+                total_h.resize((process_num * batch_size, hidden_unit_num))
+                total_c.resize((process_num * batch_size, hidden_unit_num))
+                self.rnn_learn(
+                    total_obs,
+                    tf.one_hot(total_as, depth=a_num).numpy(),
+                    total_old_ap,
+                    total_adv,
+                    total_realv,
+                    total_h,
+                    total_c
+                )
 
-            self.learn(
-                total_obs,
-                tf.one_hot(total_as, depth=a_num).numpy(),
-                total_old_ap,
-                total_adv,
-                total_realv
-            )
+            else:
+                self.cnn_learn(
+                    total_obs,
+                    tf.one_hot(total_as, depth=a_num).numpy(),
+                    total_old_ap,
+                    total_adv,
+                    total_realv
+                )
 
             for child_id in range(process_num):  # tell agents that can start act with env
                 self.states_list[child_id] = 0
@@ -122,8 +163,11 @@ class ACBrain():
             total_as.resize((batch_size, process_num,))
             total_old_ap.resize((batch_size, process_num, a_num))
             total_adv.resize((batch_size, process_num,))
+            if use_RNN:
+                total_h.resize((batch_size, process_num, hidden_unit_num))
+                total_c.resize((batch_size, process_num, hidden_unit_num))
 
-    def learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v):
+    def cnn_learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v):
 
         for _ in range(epochs):
             sample_index = np.random.choice(total_as.shape[0], size=learning_batch)
@@ -138,12 +182,24 @@ class ACBrain():
         self.i += 1
         print("-------------------------")
         print(self.i)
-        # if self.i == max_learning_times-5:
-        #     import sys
-        #     self.talker.close_all()       # send kill signal to child(agent)
-        #     sys.exit(0)
 
-        self.memory = []
+    def rnn_learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v, total_h, total_c):
+
+        for _ in range(epochs):
+            sample_index = np.random.choice(total_as.shape[0], size=learning_batch)
+            grads, loss = self.model.total_grad(total_obs[sample_index],
+                                                total_as[sample_index],
+                                                total_adv[sample_index],
+                                                total_real_v[sample_index],
+                                                total_old_ap[sample_index],
+                                                total_h[sample_index],
+                                                total_c[sample_index])
+            grads, grad_norm = tf.clip_by_global_norm(grads, 0.5)
+            self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
+
+        self.i += 1
+        print("-------------------------")
+        print(self.i)
 
     def calc_realv_and_adv(self, v, r, done):
         length = r.shape[0]
