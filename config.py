@@ -14,6 +14,7 @@ epochs = 3                                   # learning epochs time
 VFcoeff = 1                                  # same as PPO paper
 
 env_name = 'PongDeterministic-v4'            # env name
+# env_name = 'BreakoutDeterministic-v4'            # env name
 import gym
 env = gym.make(env_name)
 a_num = env.action_space.n                   # env.action_space

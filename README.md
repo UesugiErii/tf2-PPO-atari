@@ -24,13 +24,14 @@ gym (0.13.1)
 
 ## Speed
 
-1070ti and ryzen1700(OC 3.7)
+1070ti(1607Mhz), ryzen1700(OC 3.7), DDR4 2933MHz(14-17-17-35)
 
-Breakout  
-2.04 learning per second (estimated value by pong)
-
-Pong  
-2.15 learning per second
+|Network|Env|Learning times per second|Step per second(total core)|
+| :---: | :-----:  | :-----: | :-----: |
+| CNN | breakout | 2.186     | 2238 |
+| RNN | breakout | 2.525     | 2586 |
+| CNN | pong     | 2.519     | 2579 |
+| RNN | pong     | 2.718     | 2783 |
 
 ## Program structure
 

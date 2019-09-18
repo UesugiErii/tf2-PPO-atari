@@ -1,4 +1,5 @@
 import numpy as np
+import numba
 import os
 
 os.environ["TF_FORCE_GPU_ALLOW_GROWTH"] = "true"
@@ -201,7 +202,9 @@ class ACBrain():
         print("-------------------------")
         print(self.i)
 
-    def calc_realv_and_adv(self, v, r, done):
+    @staticmethod
+    @numba.jit(nopython=True)
+    def calc_realv_and_adv(v, r, done):
         length = r.shape[0]
         num = r.shape[1]
 
@@ -216,7 +219,9 @@ class ACBrain():
 
         return realv[:-1, :], adv  # end_v dont need
 
-    def calc_realv_and_adv_GAE(self, v, r, done):
+    @staticmethod
+    @numba.jit(nopython=True)
+    def calc_realv_and_adv_GAE(v, r, done):
         length = r.shape[0]
         num = r.shape[1]
 
