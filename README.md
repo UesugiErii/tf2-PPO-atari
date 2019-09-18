@@ -73,9 +73,10 @@ So I wrote this project that is easy to understand
 
 ## logs dir explanation
 
-|dir|env|optimizers|GAE|
-| :----------: | :-----------:  | :-----------: | :-----------: |
-| 20190904-021336     | breakout     | RMSprop     | False     |
-| 20190905-000303     | breakout     | Adam     | False     |
-| 20190913-154820     | pong     | Adam     | False     |
-| 20190914-175108     | pong     | Adam     | True     |
+|dir|env|optimizers|GAE|Network|
+| :----------: | :-----------:  | :-----------: | :-----------: | :-----------: |
+| 20190904-021336     | breakout     | RMSprop     | False     | CNN |
+| 20190905-000303     | breakout     | Adam     | False     | CNN |
+| 20190913-154820     | pong     | Adam     | False     | CNN |
+| 20190914-175108     | pong     | Adam     | True     | CNN |
+| 20190918-071729     | pong     | Adam     | True     | RNN |

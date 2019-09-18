@@ -19,7 +19,7 @@ env = gym.make(env_name)
 a_num = env.action_space.n                   # env.action_space
 del env
 
-use_RNN = False
+use_RNN = True
 hidden_unit_num = 128
 if use_RNN:
     k = 1                                    # can be other number
