@@ -37,7 +37,7 @@ class ACBrain():
             )
         else:
             self.model = CNNModel()
-            self.model.build((None, IMG_H, IMG_W, k))
+            self.model.call(np.random.random((batch_size, IMG_H, IMG_W, k)).astype(np.float32))
         self.talker = talker
         self.i = 1
         self.optimizer = optim.Adam(learning_rate=CustomSchedule(lr))

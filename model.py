@@ -186,7 +186,7 @@ class RNNModel(Model):
 
 def test1():
     m = CNNModel()
-    m.build((None, IMG_H, IMG_W, k))
+    m.call(np.random.random((batch_size, IMG_H, IMG_W, k)).astype(np.float32))
     m.summary()
 
     inputs = np.random.random((1, IMG_H, IMG_W, k)).astype(np.float32)

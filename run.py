@@ -4,9 +4,12 @@ from config import *
 from brain import ACBrain
 from agent import Agent
 from environment import Env
-
+import os
 
 #   tensorboard --logdir logs/scalars
+
+def tensorboard_p(dir="./logs/scalars"):
+    os.system("tensorboard --logdir " + dir)
 
 def main():
     communication = Communication(child_num=process_num)
@@ -22,6 +25,8 @@ def main():
 
     for i in envs_p:
         i.start()
+
+    Process(target=tensorboard_p, args=()).start()
 
     brain.run()
 
