@@ -4,7 +4,7 @@ import sys
 
 
 class Agent():
-    def __init__(self, talker, seed):
+    def __init__(self, talker):
         super(Agent, self).__init__()
         self.talker = talker
 
@@ -14,7 +14,6 @@ class Agent():
         self.send_is_done = np.zeros((batch_size,), dtype=np.float32)
         self.index = 0
         self.one_episode_reward = 0
-        np.random.seed(seed)
 
     def choice_action(self, state, done):
         self.talker.send((state, done))

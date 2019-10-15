@@ -4,6 +4,19 @@ from PIL import Image
 from config import IMG_H, IMG_W
 
 
+def get_seed():
+    # In 115.74 years , you dont will get same seed
+    # unless you 'python3 run.py' twice in 0.01s
+    # if so , agent and env's seed is same
+    # but seed of tensorflow will be different
+    t = str(time.time()).split('.')
+    first = t[0][-7:]
+    second = t[1][:2]
+    if len(second) < 2:
+        second = second + '0' * (2 - len(second))
+    return int(first + second)
+
+
 def gray_scale(im):
     """
     this function is used to convert an image to gray image

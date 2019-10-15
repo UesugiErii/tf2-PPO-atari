@@ -8,7 +8,7 @@ from atari_wrappers import *
 
 
 class Env():
-    def __init__(self, agent, env_id):
+    def __init__(self, agent, env_id, seed):
         env = gym.make(env_name)
         # env =  NoopResetEnv(env , noop_max=env_id)
         env = WarpFrame(env, width=IMG_W, height=IMG_H, grayscale=True)
@@ -17,11 +17,11 @@ class Env():
 
         self.agent = agent
         self.env_id = env_id
+        self.seed = seed
 
     def run(self):
-        np.random.seed(self.env_id)
-        self.env.seed(self.env_id)
-
+        np.random.seed(self.seed)
+        self.env.seed(self.seed)
         # use to count episode
         count = 1
         state = self.env.reset()

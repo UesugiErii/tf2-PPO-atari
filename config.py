@@ -1,4 +1,4 @@
-process_num = 16                             # number of actors
+process_num = 16                             # number of actors(process should < 1000000000)
 IMG_H = 84                                   # height of state after processing
 IMG_W = 84                                   # width of state after processing
 batch_size = 64                              # Rollout length , horizon , how much step in one agent in one learn time
