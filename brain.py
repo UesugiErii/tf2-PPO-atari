@@ -13,9 +13,10 @@ class CustomSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
     def __init__(self, init_lr):
         super(CustomSchedule, self).__init__()
         self.last_lr = init_lr
-        self.max_learning_times = max_learning_times
+        self.max_learning_times = max_learning_times * epochs
 
     def __call__(self, step):
+        # step start from 0
         # every time call , step automatic += 1
         temp_lr = lr * ((self.max_learning_times - step) / self.max_learning_times)
         self.last_lr = temp_lr
@@ -155,6 +156,10 @@ class ACBrain():
                     total_adv,
                     total_realv
                 )
+
+            if self.i == max_learning_times:
+                print("learning done")
+                return 0
 
             for child_id in range(process_num):  # tell agents that can start act with env
                 self.states_list[child_id] = 0
