@@ -161,6 +161,10 @@ class ACBrain():
                 print("learning done")
                 return 0
 
+            self.i += 1
+            print("-------------------------")
+            print(self.i)
+
             for child_id in range(process_num):  # tell agents that can start act with env
                 self.states_list[child_id] = 0
                 self.talker.send("ok", child_id)
@@ -185,10 +189,6 @@ class ACBrain():
             grads, grad_norm = tf.clip_by_global_norm(grads, 0.5)
             self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
 
-        self.i += 1
-        print("-------------------------")
-        print(self.i)
-
     def rnn_learn(self, total_obs, total_as, total_old_ap, total_adv, total_real_v, total_h, total_c):
 
         for _ in range(epochs):
@@ -202,10 +202,6 @@ class ACBrain():
                                                 total_c[sample_index])
             grads, grad_norm = tf.clip_by_global_norm(grads, 0.5)
             self.optimizer.apply_gradients(zip(grads, self.model.trainable_weights))
-
-        self.i += 1
-        print("-------------------------")
-        print(self.i)
 
     @staticmethod
     @numba.jit(nopython=True)

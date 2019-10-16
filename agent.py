@@ -14,6 +14,7 @@ class Agent():
         self.send_is_done = np.zeros((batch_size,), dtype=np.float32)
         self.index = 0
         self.one_episode_reward = 0
+        np.set_printoptions(precision=3, suppress=True)
 
     def choice_action(self, state, done):
         self.talker.send((state, done))
