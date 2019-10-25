@@ -158,6 +158,8 @@ class ACBrain():
                 )
 
             if self.i == max_learning_times:
+                from model import weight_dir
+                self.model.save_weights(weight_dir + str(self.model.total_index), save_format='tf')
                 print("learning done")
                 return 0
 

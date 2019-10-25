@@ -7,7 +7,7 @@ from config import *
 from datetime import datetime
 
 logdir = "./logs/scalars/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-weight_dir = "./logs/weight/"
+weight_dir = "./logs/weight/" + datetime.now().strftime("%Y%m%d-%H%M%S") + '/'
 file_writer = tf.summary.create_file_writer(logdir + "/metrics")
 file_writer.set_as_default()
 index = 0
